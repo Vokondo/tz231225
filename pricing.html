@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Matrix | Trendzeta Engineering Systems</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        labGray: '#FFFFFF',
+                        labDark: '#111111',
+                        labStroke: '#E5E5E5',
+                        labOrange: '#FF5C00',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        body {
+            background-color: #FFFFFF;
+            color: #111111;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .mono-text {
+            font-family: 'JetBrains Mono', 'monospace';
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .btn-lab {
+            position: relative;
+            background: #111111;
+            color: #FFFFFF;
+            padding: 14px 28px;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', 'monospace';
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-lab:hover {
+            background: #FF5C00;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 92, 0, 0.1);
+        }
+
+        .lab-card {
+            border: 1px solid #E5E5E5;
+            transition: all 0.4s ease;
+            background: #FFFFFF;
+        }
+
+        .lab-card:hover {
+            border-color: #FF5C00;
+        }
+
+        .page-container {
+            background-color: #FFFFFF;
+        }
+
+        .sticky-nav {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid #E5E5E5;
+        }
+
+        .process-line {
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: #E5E5E5;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .ticker-scroll {
+            display: flex;
+            animation: ticker 30s linear infinite;
+        }
+
+        /* Mobile Menu Styles */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 64px;
+            left: 0;
+            right: 0;
+            background: white;
+            border-b: 1px solid #E5E5E5;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            z-index: 40;
+        }
+
+        .mobile-menu.active {
+            display: block;
+        }
+
+        .mobile-menu nav {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .mobile-menu a {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #F5F5F5;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            padding: 8px;
+            z-index: 50;
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background: #111111;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            header nav:not(.mobile-menu nav) {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="selection:bg-labOrange selection:text-white">
+
+    <!-- Nav -->
+    <header class="fixed top-0 w-full z-50 sticky-nav">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="font-semibold tracking-tighter text-xl flex items-center gap-2">
+                TRENDZETA<span class="text-labOrange">.LAB</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8 mono-text text-[10px] text-gray-400 uppercase tracking-wider">
+                <a href="about.html" class="hover:text-labDark transition-colors">About</a>
+                <a href="pricing.html" class="hover:text-labDark transition-colors">Pricing</a>
+                <a href="index.html#contact" class="btn-lab">Initialize</a>
+            </nav>
+            <button class="hamburger md:hidden" id="mobileMenuToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <nav class="mono-text text-[10px] text-gray-400 uppercase tracking-wider">
+                <a href="about.html" class="hover:text-labDark transition-colors block">About</a>
+                <a href="pricing.html" class="hover:text-labDark transition-colors block">Pricing</a>
+                <a href="index.html#contact" class="btn-lab inline-block text-center w-full mt-2">Initialize</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pt-20 pb-32 page-container min-h-screen">
+        <div class="max-w-7xl mx-auto px-6">
+            
+            <!-- Header Section -->
+            <div class="mb-20 fade-in visible">
+                <span class="mono-text text-labOrange mb-4 block">Pricing_Manifest_v2.5</span>
+                <h1 class="text-5xl md:text-7xl font-bold tracking-tighter mb-8 max-w-3xl leading-[0.9]">
+                    INVESTMENT <span class="italic text-gray-300 underline decoration-labStroke">MATRIX.</span>
+                </h1>
+                <p class="text-gray-500 text-lg max-w-xl font-light leading-relaxed">
+                    Transparent capital allocation structures designed for technical performance. No hidden fees, only measurable system yields.
+                </p>
+            </div>
+
+            <!-- Tiers Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-32">
+                
+                <!-- Starter Node -->
+                <div class="p-12 flex flex-col h-full lab-card group">
+                    <div class="mb-12">
+                        <span class="mono-text text-gray-400 block mb-2">Protocol_01</span>
+                        <h3 class="text-3xl font-medium tracking-tight mb-4">Starter Node</h3>
+                        <p class="text-sm text-gray-500 mb-8 leading-relaxed">Perfect for emerging brands establishing a baseline growth system in the West African market.</p>
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-sm font-medium">GH₵</span>
+                            <span class="text-5xl font-bold tracking-tighter">4,500</span>
+                            <span class="text-xs mono-text text-gray-400 ml-2">/ month</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 mb-12 flex-grow">
+                        <div class="flex items-center gap-3 text-sm">
+                            <svg class="w-4 h-4 text-labOrange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <span>Meta & Google Ad Management</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-sm">
+                            <svg class="w-4 h-4 text-labOrange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <span>Monthly Performance Audit</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-gray-300">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <span>Growth Automation Suite</span>
+                        </div>
+                    </div>
+
+                    <button class="w-full btn-lab justify-center">Deploy Node</button>
+                </div>
+
+                <!-- Growth Protocol (Featured) -->
+                <div class="bg-labDark p-12 flex flex-col h-full relative overflow-hidden group shadow-2xl">
+                    <div class="absolute top-0 right-0 p-4">
+                        <span class="bg-labOrange text-white px-3 py-1 text-[8px] mono-text">High_Yield_Efficiency</span>
+                    </div>
+                    
+                    <div class="mb-12 text-white">
+                        <span class="mono-text text-labOrange block mb-2">Protocol_02</span>
+                        <h3 class="text-3xl font-medium tracking-tight mb-4">Growth Protocol</h3>
+                        <p class="text-sm text-gray-400 mb-8 leading-relaxed">Our most requested intervention. Deep-funnel engineering for brands ready to scale aggressively.</p>
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-sm font-medium">GH₵</span>
+                            <span class="text-5xl font-bold tracking-tighter">8,500</span>
+                            <span class="text-xs mono-text text-gray-500 ml-2">/ month</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 mb-12 flex-grow text-white/80">
+                        <div class="flex items-center gap-3 text-sm">
+                            <svg class="w-4 h-4 text-labOrange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <span>Advanced Pixel Integration</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-sm">
+                            <svg class="w-4 h-4 text-labOrange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <span>Weekly Optimization Sprints</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-labOrange font-medium">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <span>Automation & CRM Sync</span>
+                        </div>
+                    </div>
+
+                    <button class="w-full bg-white text-labDark py-4 text-[11px] mono-text hover:bg-labOrange hover:text-white transition-all uppercase tracking-[0.1em]">Accelerate Scale</button>
+                </div>
+
+                <!-- Enterprise Node -->
+                <div class="p-12 flex flex-col h-full lab-card group">
+                    <div class="mb-12">
+                        <span class="mono-text text-gray-400 block mb-2">Protocol_03</span>
+                        <h3 class="text-3xl font-medium tracking-tight mb-4">Enterprise</h3>
+                        <p class="text-sm text-gray-500 mb-8 leading-relaxed">Full-stack laboratory integration. Custom built systems for market leaders requiring total dominance.</p>
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-sm font-medium italic">Custom</span>
+                            <span class="text-5xl font-bold tracking-tighter">POA</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 mb-12 flex-grow">
+                        <div class="flex items-center gap-3 text-sm">
+                            <svg class="w-4 h-4 text-labOrange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <span>Omnichannel Market Capture</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-labOrange font-medium">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <span>Dedicated Growth Engineer</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-sm">
+                            <svg class="w-4 h-4 text-labOrange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <span>Full Content Production</span>
+                        </div>
+                    </div>
+
+                    <button class="w-full btn-lab justify-center">Request Briefing</button>
+                </div>
+            </div>
+
+            <!-- New Section: System Yields (Metrics) -->
+            <div class="mb-32 fade-in">
+                <div class="border-t border-b border-labStroke py-16 grid grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="text-center">
+                        <span class="mono-text text-gray-400 text-[9px] mb-2 block">AVG_ROAS_IMPROVEMENT</span>
+                        <div class="text-4xl font-bold tracking-tighter">142%</div>
+                    </div>
+                    <div class="text-center border-l border-labStroke">
+                        <span class="mono-text text-gray-400 text-[9px] mb-2 block">DATA_NODES_MANAGED</span>
+                        <div class="text-4xl font-bold tracking-tighter">1.2k+</div>
+                    </div>
+                    <div class="text-center border-l border-labStroke">
+                        <span class="mono-text text-gray-400 text-[9px] mb-2 block">UPTIME_AVAILABILITY</span>
+                        <div class="text-4xl font-bold tracking-tighter">99.9%</div>
+                    </div>
+                    <div class="text-center border-l border-labStroke">
+                        <span class="mono-text text-gray-400 text-[9px] mb-2 block">SYSTEM_EFFICIENCY</span>
+                        <div class="text-4xl font-bold tracking-tighter">A+</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Section: Iterative Deployment (Process) -->
+            <div class="mb-32">
+                <div class="flex flex-col md:flex-row gap-20">
+                    <div class="md:w-1/3">
+                        <span class="mono-text text-labOrange mb-4 block">Process_Execution</span>
+                        <h2 class="text-4xl font-bold tracking-tight mb-6">How We Deploy.</h2>
+                        <p class="text-gray-500 text-sm leading-relaxed">Our implementation follows a strict technical roadmap to ensure zero-loss migration and maximum output velocity.</p>
+                    </div>
+                    <div class="md:w-2/3 space-y-12 relative">
+                        <div class="process-line"></div>
+                        <div class="relative pl-12">
+                            <div class="absolute left-0 top-0 w-[40px] h-[40px] bg-white border border-labStroke flex items-center justify-center mono-text text-[10px] font-bold">01</div>
+                            <h4 class="font-semibold mb-2">Diagnostic Phase</h4>
+                            <p class="text-gray-500 text-sm">Full audit of existing ad accounts, pixels, and conversion APIs to identify leakage points.</p>
+                        </div>
+                        <div class="relative pl-12">
+                            <div class="absolute left-0 top-0 w-[40px] h-[40px] bg-white border border-labStroke flex items-center justify-center mono-text text-[10px] font-bold">02</div>
+                            <h4 class="font-semibold mb-2">Protocol Architecture</h4>
+                            <p class="text-gray-500 text-sm">Building the custom tracking matrix and creative framework tailored to your target node.</p>
+                        </div>
+                        <div class="relative pl-12">
+                            <div class="absolute left-0 top-0 w-[40px] h-[40px] bg-labDark text-white flex items-center justify-center mono-text text-[10px] font-bold">03</div>
+                            <h4 class="font-semibold mb-2">Live Execution</h4>
+                            <p class="text-gray-500 text-sm">Deploying campaigns with continuous split-testing and real-time budget reallocation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Section: Trusted Partners (Ticker) -->
+            <div class="mb-32 overflow-hidden border-t border-b border-labStroke py-12">
+                <span class="mono-text text-gray-400 text-center block mb-8 text-[9px]">Global_Integration_Partners</span>
+                <div class="ticker-scroll">
+                    <!-- Duplicate items for seamless loop -->
+                    <div class="flex items-center gap-20 mx-10">
+                        <span class="text-2xl font-black opacity-20 tracking-tighter grayscale">META_ADS</span>
+                        <span class="text-2xl font-black opacity-20 tracking-tighter grayscale">GOOGLE_CLOUD</span>
+                        <span class="text-2xl font-black opacity-20 tracking-tighter grayscale">SHOPIFY_PLUS</span>
+                        <span class="text-2xl font-black opacity-20 tracking-tighter grayscale">TIKTOK_BUSINESS</span>
+                        <span class="text-2xl font-black opacity-20 tracking-tighter grayscale">KLAVIYO</span>
+                    </div>
+                    <div class="flex items-center gap-20 mx-10">
+                        <span class="text-2xl font-black opacity-20 tracking-tighter grayscale">META_ADS</span>
+                        <span class="text-2xl font-black opacity-20 tracking-tighter grayscale">GOOGLE_CLOUD</span>
+                        <span class="text-2xl font-black opacity-20 tracking-tighter grayscale">SHOPIFY_PLUS</span>
+                        <span class="text-2xl font-black opacity-20 tracking-tighter grayscale">TIKTOK_BUSINESS</span>
+                        <span class="text-2xl font-black opacity-20 tracking-tighter grayscale">KLAVIYO</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparison Table for Desktop -->
+            <div class="mt-32 hidden md:block fade-in">
+                <div class="mb-10">
+                    <span class="mono-text text-labOrange mb-2 block">Technical_Comparison</span>
+                    <h2 class="text-3xl font-medium tracking-tight">Deployment Capabilities</h2>
+                </div>
+                
+                <div class="border border-labStroke bg-white">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="border-b border-labStroke mono-text text-[9px] text-gray-400">
+                            <tr>
+                                <th class="p-6 font-medium">Capability_Name</th>
+                                <th class="p-6 font-medium">Starter</th>
+                                <th class="p-6 font-medium">Growth</th>
+                                <th class="p-6 font-medium">Enterprise</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-labStroke text-sm">
+                            <tr>
+                                <td class="p-6 font-medium">Ad Channels Managed</td>
+                                <td class="p-6 text-gray-500">2 Channels</td>
+                                <td class="p-6 text-gray-500">4 Channels</td>
+                                <td class="p-6 text-gray-500">Unlimited</td>
+                            </tr>
+                            <tr>
+                                <td class="p-6 font-medium">Reporting Frequency</td>
+                                <td class="p-6 text-gray-500">Monthly</td>
+                                <td class="p-6 text-gray-500">Weekly</td>
+                                <td class="p-6 text-gray-500">Real-time Dashboard</td>
+                            </tr>
+                            <tr>
+                                <td class="p-6 font-medium">Automation Layers</td>
+                                <td class="p-6 text-gray-500">—</td>
+                                <td class="p-6 text-gray-500">Basic Flows</td>
+                                <td class="p-6 text-gray-500">Multi-tier Architecture</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- FAQ Component -->
+            <div class="mt-32 max-w-3xl mx-auto">
+                <div class="text-center mb-12">
+                    <span class="mono-text text-labOrange mb-4 block">Faq_Log</span>
+                    <h2 class="text-3xl font-medium">Common Variables</h2>
+                </div>
+                <div class="space-y-4">
+                    <div class="border border-labStroke p-6 bg-white hover:border-labOrange transition-colors">
+                        <h4 class="font-medium mb-2 uppercase text-xs mono-text tracking-widest">Is ad spend included?</h4>
+                        <p class="text-sm text-gray-500 leading-relaxed">No. Management fees are for system engineering and optimization. Your ad budget is paid directly to the platforms (Meta/Google).</p>
+                    </div>
+                    <div class="border border-labStroke p-6 bg-white hover:border-labOrange transition-colors">
+                        <h4 class="font-medium mb-2 uppercase text-xs mono-text tracking-widest">Can I upgrade protocols mid-cycle?</h4>
+                        <p class="text-sm text-gray-500 leading-relaxed">Yes. Systems are modular. You can scale from Starter to Growth as your revenue milestones are achieved.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="mt-32 border-t border-labStroke bg-white">
+                <div class="max-w-7xl mx-auto px-6 py-12">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+                        <div class="flex-1">
+                            <div class="text-labDark font-bold mb-2 mono-text text-[10px] uppercase tracking-wider">TRENDZETA.LAB®</div>
+                            <p class="text-gray-500 text-sm max-w-md leading-relaxed">Engineering high-performance digital ecosystems for the ambitious enterprise.</p>
+                        </div>
+                        <div class="flex flex-col md:flex-row items-start md:items-center gap-8">
+                            <div class="mono-text text-[9px] text-gray-400 uppercase tracking-wider">
+                                <div class="mb-1">ACCRA, GHANA</div>
+                                <div>5.6037° N, 0.1870° W</div>
+                            </div>
+                            <nav class="flex flex-col gap-2 mono-text text-[9px] text-gray-400 uppercase tracking-wider">
+                                <a href="about.html" class="hover:text-labDark transition-colors">About</a>
+                                <a href="pricing.html" class="hover:text-labDark transition-colors">Pricing</a>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="mt-12 pt-8 border-t border-labStroke flex flex-col md:flex-row justify-between items-center gap-4 mono-text text-[8px] text-gray-300 uppercase tracking-wider">
+                        <span>© 2025 TRENDZETA.LAB. ALL RIGHTS RESERVED.</span>
+                        <span class="text-labOrange">SYSTEM_STATUS: OPERATIONAL</span>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+    </main>
+
+    <script>
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Mobile Menu Toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        if (mobileMenuToggle && mobileMenu) {
+            mobileMenuToggle.addEventListener('click', () => {
+                mobileMenuToggle.classList.toggle('active');
+                mobileMenu.classList.toggle('active');
+                document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+            });
+
+            // Close menu when clicking on a link
+            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenuToggle.classList.remove('active');
+                    mobileMenu.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!mobileMenuToggle.contains(e.target) && !mobileMenu.contains(e.target)) {
+                    mobileMenuToggle.classList.remove('active');
+                    mobileMenu.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+

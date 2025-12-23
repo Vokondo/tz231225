@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trendzeta | About</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        tzBorder: '#E5E5E5',
+                        tzOrange: '#FF5C00',
+                        tzDeep: '#111111',
+                        tzMuted: '#666666',
+                        tzLightGray: '#F9F9FB',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+        
+        body {
+            background-color: #FFFFFF;
+            color: #111111;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .scanner {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(255, 92, 0, 0.1) 50%, transparent 100%);
+            animation: scan 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            0%, 100% { transform: translateY(-100%); }
+            50% { transform: translateY(100%); }
+        }
+
+        .technical-line {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #E5E5E5, transparent);
+            margin: 1rem 0;
+        }
+
+        .data-dot {
+            width: 8px;
+            height: 8px;
+            background: #FF5C00;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .blueprint-grid {
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Mobile Menu Styles */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 64px;
+            left: 0;
+            right: 0;
+            background: white;
+            border-b: 1px solid #E5E5E5;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            z-index: 40;
+        }
+
+        .mobile-menu.active {
+            display: block;
+        }
+
+        .mobile-menu nav {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .mobile-menu a {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #F5F5F5;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            padding: 8px;
+            z-index: 50;
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background: #111111;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            header nav:not(.mobile-menu nav) {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVIGATION -->
+    <header class="fixed top-0 w-full z-50 bg-white/95 border-b border-tzBorder backdrop-blur-md">
+        <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="font-semibold tracking-tighter text-xl flex items-center gap-2">
+                TRENDZETA<span class="text-tzOrange">.LAB</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8 mono text-[10px] text-tzMuted uppercase tracking-wider">
+                <a href="about.html" class="hover:text-tzDeep transition-colors">About</a>
+                <a href="pricing.html" class="hover:text-tzDeep transition-colors">Pricing</a>
+                <a href="index.html#contact" class="px-4 py-2 bg-tzDeep text-white mono text-[10px] uppercase tracking-wider hover:bg-tzOrange transition-all">Initialize</a>
+            </nav>
+            <button class="hamburger md:hidden" id="mobileMenuToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <nav class="mono text-[10px] text-tzMuted uppercase tracking-wider">
+                <a href="about.html" class="hover:text-tzDeep transition-colors block">About</a>
+                <a href="pricing.html" class="hover:text-tzDeep transition-colors block">Pricing</a>
+                <a href="index.html#contact" class="px-4 py-2 bg-tzDeep text-white mono text-[10px] uppercase tracking-wider hover:bg-tzOrange transition-all inline-block text-center w-full mt-2">Initialize</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN ABOUT CONTENT -->
+    <main class="max-w-[1400px] mx-auto border-x border-tzBorder min-h-[calc(100vh-64px)] bg-white mt-16">
+        
+        <!-- SECTION 1: IDENTITY -->
+        <section id="identity" class="grid grid-cols-1 lg:grid-cols-12 border-b border-tzBorder">
+            <div class="lg:col-span-7 p-12 lg:p-20 flex flex-col justify-center">
+                <div class="mono text-[9px] text-tzOrange mb-8 flex items-center gap-3 uppercase font-bold tracking-[0.2em]">
+                    <span class="data-dot"></span> Agency_Origin
+                </div>
+                <h1 class="text-[clamp(2.5rem,6vw,5rem)] font-light tracking-tighter leading-[0.95] mb-10 text-tzDeep">
+                    More Than An <br>
+                    <span class="font-bold italic text-tzOrange underline decoration-1 underline-offset-8">Agency</span>.
+                </h1>
+                <p class="text-lg text-tzMuted leading-relaxed max-w-xl">
+                    Trendzeta was founded on a singular realization: traditional marketing is broken. In a landscape of high-noise and low-trust, we built a lab dedicated to the science of conversion, operating at the intersection of psychology, data, and engineering.
+                </p>
+            </div>
+            <div class="lg:col-span-5 border-l border-tzBorder relative bg-tzLightGray overflow-hidden flex items-center justify-center p-12">
+                <div class="scanner"></div>
+                <div class="relative z-10 w-full aspect-square border border-tzBorder bg-white p-8 flex flex-col justify-between shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <div class="mono text-[10px] text-tzMuted">CORE_DNA_SEQ</div>
+                        <div class="text-tzOrange mono text-[10px] animate-pulse font-bold">STABLE</div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="text-4xl font-black italic tracking-tighter">0.02%</div>
+                        <div class="technical-line"></div>
+                        <p class="mono text-[8px] text-tzMuted leading-loose uppercase">
+                            Deviation tolerance. We optimize for high-predictability growth cycles in emerging markets.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: THE METHOD (3-Column) -->
+        <section id="method" class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-tzBorder border-b border-tzBorder">
+            <div class="p-12 hover:bg-tzLightGray transition-colors group">
+                <span class="mono text-xs text-tzMuted group-hover:text-tzOrange transition-colors font-bold">01/</span>
+                <h3 class="text-xl font-bold uppercase mt-6 mb-4 tracking-tight">Technical Audits</h3>
+                <p class="text-sm text-tzMuted leading-relaxed">We don't guess. We tear down your existing infrastructure to find the hidden friction points leaking your revenue.</p>
+            </div>
+            <div class="p-12 hover:bg-tzLightGray transition-colors group">
+                <span class="mono text-xs text-tzMuted group-hover:text-tzOrange transition-colors font-bold">02/</span>
+                <h3 class="text-xl font-bold uppercase mt-6 mb-4 tracking-tight">Behavioral Labs</h3>
+                <p class="text-sm text-tzMuted leading-relaxed">Creative is engineered. We test psychological triggers across diverse demographics to find the most efficient path to "Yes."</p>
+            </div>
+            <div class="p-12 hover:bg-tzLightGray transition-colors group">
+                <span class="mono text-xs text-tzMuted group-hover:text-tzOrange transition-colors font-bold">03/</span>
+                <h3 class="text-xl font-bold uppercase mt-6 mb-4 tracking-tight">Growth Ops</h3>
+                <p class="text-sm text-tzMuted leading-relaxed">Scaling is a systemic process. We deploy full-stack operations that run autonomously once calibrated.</p>
+            </div>
+        </section>
+
+        <!-- NEW SECTION: MANAGING PARTNER -->
+        <section id="partner" class="grid grid-cols-1 lg:grid-cols-12 border-b border-tzBorder">
+            <div class="lg:col-span-4 border-r border-tzBorder p-12 lg:p-16 flex flex-col justify-between bg-tzLightGray">
+                <div>
+                    <div class="mono text-[9px] text-tzOrange mb-8 uppercase font-bold tracking-[0.2em]">Partner_Intel</div>
+                    <div class="relative w-full aspect-[4/5] bg-tzDeep mb-8 border border-tzBorder overflow-hidden group">
+                        <!-- Placeholder for Partner Image -->
+                        <div class="absolute inset-0 bg-tzDeep/20 flex items-center justify-center">
+                            <svg class="w-12 h-12 text-tzBorder" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <div class="absolute inset-0 scanner opacity-40"></div>
+                        <div class="absolute bottom-4 left-4 bg-tzOrange px-3 py-1 mono text-[8px] text-white">CHIEF_SYSTEM_ARCHITECT</div>
+                    </div>
+                    <h3 class="text-3xl font-bold tracking-tighter uppercase mb-2">Managing Partner</h3>
+                    <div class="mono text-[10px] text-tzMuted uppercase tracking-widest mb-6">Credential: 12+ Yrs Scaling Entities</div>
+                </div>
+            </div>
+            <div class="lg:col-span-8 p-12 lg:p-20 flex flex-col justify-center">
+                <div class="max-w-2xl">
+                    <h2 class="text-4xl font-bold tracking-tighter uppercase mb-10 leading-none">Engineering <br> Profitability.</h2>
+                    <div class="space-y-8">
+                        <p class="text-lg text-tzMuted leading-relaxed">
+                            Overseeing the strategic direction of Trendzeta Lab, our Managing Partner bridges the gap between high-level business objectives and granular technical execution. 
+                        </p>
+                        <div class="technical-line"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+                            <div>
+                                <h4 class="mono text-[10px] font-bold text-tzDeep uppercase mb-3">Core Focus</h4>
+                                <ul class="space-y-2 mono text-[11px] text-tzMuted uppercase">
+                                    <li class="flex items-center gap-2"><span class="w-1 h-1 bg-tzOrange"></span> Capital Deployment Models</li>
+                                    <li class="flex items-center gap-2"><span class="w-1 h-1 bg-tzOrange"></span> Structural Scale Architecture</li>
+                                    <li class="flex items-center gap-2"><span class="w-1 h-1 bg-tzOrange"></span> Emerging Market Logistics</li>
+                                </ul>
+                            </div>
+                            <div class="p-6 border border-tzBorder bg-tzLightGray/50">
+                                <p class="text-[12px] italic text-tzDeep leading-relaxed">
+                                    "Our goal is to ensure that every partner we onboard doesn't just grow, but evolves into a market-dominating system."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: LEADERSHIP / FOUNDATION -->
+        <section id="leadership" class="p-12 lg:p-20 border-b border-tzBorder">
+            <div class="flex flex-col lg:flex-row justify-between items-end gap-10 mb-20">
+                <div class="max-w-2xl">
+                    <div class="mono text-[9px] text-tzOrange mb-6 uppercase font-bold tracking-[0.3em]">Our_Engineers</div>
+                    <h2 class="text-5xl font-bold tracking-tighter uppercase leading-none">Built By <br> Technologists.</h2>
+                </div>
+                <div class="mono text-[10px] text-tzMuted text-left lg:text-right uppercase tracking-[0.2em] max-w-xs">
+                    Trendzeta is led by a collective of data scientists, creative strategists, and performance engineers.
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div class="border-l-4 border-tzOrange p-8 bg-tzLightGray">
+                    <h4 class="text-2xl font-bold tracking-tight uppercase mb-2">The Vision</h4>
+                    <p class="text-sm text-tzMuted leading-relaxed">
+                        "Marketing in West Africa has been treated as an art for too long. We are here to prove that it is an exact science—one that can be measured, predicted, and scaled with mathematical precision."
+                    </p>
+                    <div class="mt-6 mono text-[10px] font-bold text-tzDeep">— TZ_SYSTEM_CHIEF</div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-6 border border-tzBorder text-center">
+                        <div class="text-3xl font-bold italic mb-1">10+</div>
+                        <div class="mono text-[8px] text-tzMuted uppercase">Core_Modules</div>
+                    </div>
+                    <div class="p-6 border border-tzBorder text-center">
+                        <div class="text-3xl font-bold italic mb-1">50M+</div>
+                        <div class="mono text-[8px] text-tzMuted uppercase">Data_Points</div>
+                    </div>
+                    <div class="p-6 border border-tzBorder text-center">
+                        <div class="text-3xl font-bold italic mb-1">2023</div>
+                        <div class="mono text-[8px] text-tzMuted uppercase">Lab_Established</div>
+                    </div>
+                    <div class="p-6 border border-tzBorder text-center">
+                        <div class="text-3xl font-bold italic mb-1">4.0</div>
+                        <div class="mono text-[8px] text-tzMuted uppercase">System_Version</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: MISSION & VALUES -->
+        <section id="mission" class="grid grid-cols-1 lg:grid-cols-12">
+            <div class="lg:col-span-4 border-r border-tzBorder p-12 bg-tzDeep text-white">
+                <div class="mono text-[9px] text-tzOrange mb-8 uppercase font-bold">The_Manifesto</div>
+                <h3 class="text-3xl font-bold tracking-tighter uppercase mb-6 leading-none">Our Mission <br> Protocol.</h3>
+                <p class="text-sm text-white/60 leading-relaxed">To architect the most robust growth ecosystem for enterprises in West Africa, driving economic acceleration through technical excellence.</p>
+            </div>
+            <div class="lg:col-span-8">
+                <div class="divide-y divide-tzBorder">
+                    <div class="p-8 flex items-center gap-10 group cursor-default">
+                        <span class="mono text-[10px] text-tzMuted font-bold">RULE_01</span>
+                        <div class="flex-grow">
+                            <h4 class="text-sm font-bold uppercase mb-1">Data Over Opinion</h4>
+                            <p class="text-[11px] text-tzMuted">We never let subjective "creative feeling" override verified conversion data.</p>
+                        </div>
+                    </div>
+                    <div class="p-8 flex items-center gap-10 group cursor-default">
+                        <span class="mono text-[10px] text-tzMuted font-bold">RULE_02</span>
+                        <div class="flex-grow">
+                            <h4 class="text-sm font-bold uppercase mb-1">Radical Transparency</h4>
+                            <p class="text-[11px] text-tzMuted">Partners have 24/7 access to the raw metrics driving their growth.</p>
+                        </div>
+                    </div>
+                    <div class="p-8 flex items-center gap-10 group cursor-default">
+                        <span class="mono text-[10px] text-tzMuted font-bold">RULE_03</span>
+                        <div class="flex-grow">
+                            <h4 class="text-sm font-bold uppercase mb-1">Long-Term Architecture</h4>
+                            <p class="text-[11px] text-tzMuted">We build systems that last years, not campaigns that last weeks.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: CALL TO ACTION -->
+        <section id="contact" class="p-12 lg:p-32 text-center bg-tzDeep text-white relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10 pointer-events-none blueprint-grid invert"></div>
+            <div class="relative z-10 max-w-3xl mx-auto">
+                <div class="mono text-[9px] text-tzOrange mb-10 uppercase tracking-[0.5em] font-bold">Join_The_Network</div>
+                <h2 class="text-5xl lg:text-7xl font-bold tracking-tighter uppercase mb-12">Let's Build.</h2>
+                <p class="text-sm text-white/50 mono uppercase tracking-widest mb-12">Awaiting connection from forward-thinking entities.</p>
+                <div class="flex flex-col md:flex-row gap-4 justify-center">
+                    <a href="index.html#contact" class="bg-tzOrange text-white px-10 py-6 font-bold mono text-[10px] uppercase tracking-[0.3em] hover:bg-white hover:text-tzDeep transition-all inline-block">
+                        Initiate_Partnership
+                    </a>
+                    <button class="border border-white/20 text-white px-10 py-6 font-bold mono text-[10px] uppercase tracking-[0.3em] hover:bg-white hover:text-tzDeep transition-all">
+                        View_Case_Logs
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-tzBorder bg-white">
+        <div class="max-w-[1400px] mx-auto px-6 py-12">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+                <div class="flex-1">
+                    <div class="text-tzDeep font-bold mb-2 mono text-[10px] uppercase tracking-wider">TRENDZETA.LAB®</div>
+                    <p class="text-tzMuted text-sm max-w-md leading-relaxed">Engineering high-performance digital ecosystems for the ambitious enterprise.</p>
+                </div>
+                <div class="flex flex-col md:flex-row items-start md:items-center gap-8">
+                    <div class="mono text-[9px] text-tzMuted uppercase tracking-wider">
+                        <div class="mb-1">ACCRA, GHANA</div>
+                        <div>5.6037° N, 0.1870° W</div>
+                    </div>
+                    <nav class="flex flex-col gap-2 mono text-[9px] text-tzMuted uppercase tracking-wider">
+                        <a href="about.html" class="hover:text-tzDeep transition-colors">About</a>
+                        <a href="pricing.html" class="hover:text-tzDeep transition-colors">Pricing</a>
+                    </nav>
+                </div>
+            </div>
+            <div class="mt-12 pt-8 border-t border-tzBorder flex flex-col md:flex-row justify-between items-center gap-4 mono text-[8px] text-tzMuted uppercase tracking-wider">
+                <span>© 2025 TRENDZETA.LAB. ALL RIGHTS RESERVED.</span>
+                <span class="text-tzOrange">SYSTEM_STATUS: OPERATIONAL</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const target = document.querySelector(targetId);
+                if (target) {
+                    const headerOffset = 80;
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        if (mobileMenuToggle && mobileMenu) {
+            mobileMenuToggle.addEventListener('click', () => {
+                mobileMenuToggle.classList.toggle('active');
+                mobileMenu.classList.toggle('active');
+                document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+            });
+
+            // Close menu when clicking on a link
+            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenuToggle.classList.remove('active');
+                    mobileMenu.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!mobileMenuToggle.contains(e.target) && !mobileMenu.contains(e.target)) {
+                    mobileMenuToggle.classList.remove('active');
+                    mobileMenu.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+
